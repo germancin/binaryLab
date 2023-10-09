@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Real-Time Media Player</title>
+		<style>
+			#videoPlayer {
+				width: 600px;
+				height: 400px;
+			}
+		</style>
+		<!-- Add Firebase library -->
+		<script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
+	</head>
+
+	<body>
+
+		<video id="videoPlayer" controls>
+			<source src="sample.mp4" type="video/mp4">
+		</video>
+
+		<script>
+			// Initialize Firebase
+			const firebaseConfig = {
+				// Your Firebase Config Here
+			};
+			const app = firebase.initializeApp(firebaseConfig);
+			const db = firebase.database();
+
+			const videoPlayer = document.getElementById('videoPlayer');
+
+			videoPlayer.addEventListener('play', function () {
+				db.ref('playerState').set('play');
+			});
+
+			videoPlayer.addEventListener('pause', function () {
+				db.ref('playerState').set('pause');
+			});
+
+			db.ref('playerState').on('value', function (snapshot) {
+				const state = snapshot.val();
+				if (state === 'play') {
+					videoPlayer.play();
+				} else if (state === 'pause') {
+					videoPlayer.pause();
+				}
+			});
+		</script>
+
+	</body>
+
+</html>
